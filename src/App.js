@@ -8,7 +8,7 @@ import {
   initializeBlogs,
   initializeUsers,
 } from './actions/actions'
-import { Link, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { Link, Route, Switch, useHistory, useRouteMatch } from 'react-router-dom'
 import { Home } from './components/Home'
 import { Users } from './components/Users'
 import { User } from './components/User'
@@ -30,6 +30,8 @@ const App = () => {
 
   const userMatch = useRouteMatch('/users/:id')
   const blogMatch = useRouteMatch('/blogs/:id')
+
+  const history = useHistory()
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -69,6 +71,7 @@ const App = () => {
   const handleLogout = () => {
     window.localStorage.removeItem('user')
     dispatch(setUser(null))
+    history.push('/')
   }
 
   const loginForm = () => {
