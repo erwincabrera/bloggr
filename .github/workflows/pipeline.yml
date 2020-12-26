@@ -1,0 +1,28 @@
+name: Deployment Pipeline
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+ simple_deployment_pipeline:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+      - run: yarn --frozen-lockfile
+      - run: yarn build
+      - uses: SamKirkland/FTP-Deploy-Action@da0d77ff390a13097c60f9b9eb954e503a480d97
+        if: ${{ github.event_name == 'push' }}
+        with:
+          ftp-server: sftp://erwincabrera.com:21098/home/erwioqoa/bloggr.xyz/build/
+          ftp-username: erwioqoa
+          ftp-password: ${{ secrets.FTP_PASSWORD }}
+          git-ftp-args: --insecure
+          local-dir: build/
